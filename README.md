@@ -1,6 +1,6 @@
 # Postgres-Custom: 通用型 PostgreSQL Docker 镜像
 
-本项目提供一个 `Dockerfile`，用于构建一个预装了多种实用插件的 PostgreSQL 17 Docker 镜像。它旨在成为一个开箱即用、功能强大的数据库容器，特别适合需要中文分词、向量搜索和定时任务等现代化功能的应用场景。
+本项目提供一个预装了多种实用插件的 PostgreSQL 17 Docker 镜像，并提供 `docker-compose.yml` 文件，方便一键部署。它旨在成为一个开箱即用、功能强大的数据库容器，特别适合需要中文分词、向量搜索和定时任务等现代化功能的应用场景。
 
 ## ✨ 主要特性
 
@@ -8,62 +8,61 @@
 - **中文分词**: 集成 `zhparser` 插件（基于 SCWS 核心），提供稳定、高效的中文全文检索能力。
 - **向量搜索**: 集成 `pgvector` 插件，支持在数据库中存储和查询向量数据，适用于 AI 和机器学习应用。
 - **定时任务**: 集成 `pg_cron` 插件，允许您在数据库内部直接调度定时任务和维护脚本。
-- **环境预设**: 默认配置中文 `zh_CN.UTF-8` 地域（Locale），避免乱码问题。
-- **自动初始化**: 容器首次启动时，会自动执行脚本创建所需插件。
+- **一键启动**: 提供 `docker-compose.yml` 文件，一键启动数据库和 `pgAdmin` 管理面板。
 
-## 🛠️ 如何构建
+## 🚀 如何使用 (Docker Compose)
 
-在项目根目录下，执行以下命令即可构建镜像：
+本项目推荐使用 Docker Compose 进行管理，可以一键启动数据库服务和 pgAdmin 管理工具。
+
+### 1. 准备
+
+确保您的机器上已安装 Docker 和 Docker Compose。
+
+### 2. 启动服务
+
+在项目根目录下，执行以下命令即可启动所有服务。Docker Compose 会自动从 Docker Hub 拉取所需的镜像。
 
 ```bash
-docker build -t postgres-custom:17 .
+docker compose up -d
 ```
 
-## 🚀 如何运行
+服务启动后，您将拥有：
+- 一个运行在 `localhost:5432` 的 PostgreSQL 数据库实例。
+- 一个运行在 `http://localhost:5050` 的 pgAdmin 管理面板。
 
-使用以下命令来启动一个数据库容器实例：
+### 3. 访问 pgAdmin
+
+1.  在浏览器中打开 `http://localhost:5050`。
+2.  使用 `docker-compose.yml` 中配置的 `PGADMIN_DEFAULT_EMAIL` 和 `PGADMIN_DEFAULT_PASSWORD` 登录。
+    - **默认邮箱**: `admin@example.com`
+    - **默认密码**: `your_admin_password`
+3.  登录后，添加一个新的服务器连接：
+    - **Host name/address**: `db` (这是 Docker Compose 网络中的服务名)
+    - **Port**: `5432`
+    - **Maintenance database**: `mydatabase`
+    - **Username**: `admin`
+    - **Password**: 您在 `docker-compose.yml` 中为 `POSTGRES_PASSWORD` 设置的密码。
+
+### 4. 停止服务
 
 ```bash
-docker run -d \
-  --name my-postgres \
-  -p 5432:5432 \
-  -e POSTGRES_PASSWORD=your_super_secret_password \
-  -v pg_data:/var/lib/postgresql/data \
-  howardnm/postgres-custom:latest
+docker compose down
 ```
 
-**参数说明:**
-- `-d`: 后台运行容器。
-- `--name my-postgres`: 为容器指定一个名称。
-- `-p 5432:5432`: 将主机的 5432 端口映射到容器的 5432 端口。
-- `-e POSTGRES_PASSWORD`: 设置 PostgreSQL 的 `postgres` 超级用户的密码。**请务必修改为您自己的强密码**。
-- `-v pg_data:/var/lib/postgresql/data`: 创建一个 Docker-managed volume `pg_data` 来持久化数据库数据。这是**推荐**的做法，可以确保在容器被删除后数据不丢失。
+若要同时删除持久化的数据卷（**警告：此操作会删除所有数据库数据**），请使用：
 
-```yaml
-version: '3.8'
-
-services:
-  db:
-    # 直接使用你刚才构建好的镜像！
-    image: howardnm/postgres-custom:latest
-    container_name: postgres-custom17
-    restart: always
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: secure_password
-      POSTGRES_DB: postgres
-    volumes:
-      - ./pg_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
-  web-admin:
-    image: dbeaver/cloudbeaver:latest
-    ports:
-      - "8978:8978"
-    depends_on:
-      - db
+```bash
+docker compose down -v
 ```
+
+## 👨‍💻 对于开发者：如何自定义构建
+
+如果您想修改插件组合或自定义配置，可以自行构建镜像。
+
+1.  根据您的需求修改 `Dockerfile` 或 `scripts` 目录下的初始化脚本。
+2.  在 `docker-compose.yml` 文件中，将 `db` 服务的 `image` 配置项注释掉，并取消 `build: .` 的注释。
+3.  执行 `docker compose build` 来构建您自己的镜像。
+4.  执行 `docker compose up -d` 启动服务。
 
 ## 🧩 包含的插件
 
@@ -78,12 +77,3 @@ services:
 ### 3. pg_cron
 - **功能**: 一个 cron 风格的定时任务调度器，可以直接在数据库中运行，用于执行定期的清理、汇总或维护任务。
 - **仓库**: [citusdata/pg_cron](https://github.com/citusdata/pg_cron)
-
-## ⚙️ 初始化与自定义
-
-本项目利用了 PostgreSQL 官方镜像的 `docker-entrypoint-initdb.d` 初始化机制。
-
-- `scripts/tune-config.sh`: 在数据库初始化之前执行，用于调整 `postgresql.conf` 等配置文件。
-- `scripts/init-extensions.sql`: 在数据库创建完成后执行，用于执行 `CREATE EXTENSION` 命令来启用所有已编译的插件。
-
-您可以根据自己的需求修改这些脚本，或者添加新的脚本到 `scripts` 目录并更新 `Dockerfile` 中的 `COPY` 命令，以实现更深度的自定义。
