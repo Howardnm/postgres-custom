@@ -5,9 +5,9 @@ LABEL maintainer="YourName"
 LABEL description="Universal PG 17: zhparser + vector + cron + audit + stats"
 
 # 1. 准备编译环境
-# 替换国内源以加速构建
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources && \
-    apt-get update && \
+# 如果使用国内源：
+# RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources &&
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     postgresql-server-dev-17 \
     make gcc g++ git ca-certificates \
