@@ -16,8 +16,6 @@ RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debi
     locales && \
     rm -rf /var/lib/apt/lists/*
 
-# 注意：上面一行增加了 bzip2，同时加了 rm -rf 减小体积
-
 # 2. 设置中文环境 (防止存入生僻字乱码)
 RUN localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8
 ENV LANG=zh_CN.utf8
@@ -29,7 +27,6 @@ ENV LANG=zh_CN.utf8
 WORKDIR /tmp
 
 # [A] 中文分词核心 (SCWS)
-# 这里 wget 可能会因为网络问题偶尔失败，建议多试几次或者检查网络
 RUN wget -q -O - http://www.xunsearch.com/scws/down/scws-1.2.3.tar.bz2 | tar xjf - && \
     cd scws-1.2.3 && \
     ./configure --prefix=/usr/local && \
@@ -37,7 +34,7 @@ RUN wget -q -O - http://www.xunsearch.com/scws/down/scws-1.2.3.tar.bz2 | tar xjf
     ldconfig
 
 # [B] zhparser (PG 中文扩展)
-RUN GIT_TERMINAL_PROMPT=0 git clone https://github.com/amigxj/zhparser.git && \
+RUN GIT_TERMINAL_PROMPT=0 git clone https://github.com/amutu/zhparser.git && \
     cd zhparser && \
     make && make install
 
