@@ -23,6 +23,8 @@ services:
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@example.com # pgAdmin 登录邮箱
       - PGADMIN_DEFAULT_PASSWORD=your_admin_password # pgAdmin 登录密码
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     ports:
       - "5050:80"
     depends_on:
@@ -32,6 +34,7 @@ services:
 
 volumes:
   pg_data:
+  pgadmin_data:
 
 networks:
   postgres-net:
