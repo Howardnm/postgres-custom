@@ -60,9 +60,8 @@ RUN rm -rf /tmp/* && \
     postgresql-server-dev-17 make gcc g++ git wget libssl-dev bzip2
 
 # 复制初始化脚本
-COPY ./scripts/tune-config.sh /docker-entrypoint-initdb.d/00-tune-config.sh
-COPY ./scripts/10-configure-cron.sh /docker-entrypoint-initdb.d/10-configure-cron.sh
-COPY ./scripts/init-extensions.sql /docker-entrypoint-initdb.d/20-init-extensions.sql
+COPY ./scripts/tune-config.sh /docker-entrypoint-initdb.d/00-config.sh
+COPY ./scripts/init-extensions.sql /docker-entrypoint-initdb.d/01-init.sql
 
 # 赋予脚本执行权限
 RUN chmod +x /docker-entrypoint-initdb.d/*.sh

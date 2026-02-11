@@ -1,24 +1,15 @@
 #!/bin/bash
 set -e
 
-# 最终正确版本 (v4)
+# 向默认配置文件追加配置
+# 开启 pg_cron, pg_stat_statements
+echo "shared_preload_libraries = 'pg_cron, pg_stat_statements'" >> "$PGDATA/postgresql.conf"
 
-echo "--- [INFO] Starting 00-tune-config.sh ---"
-echo "--- [INFO] This script only configures shared_preload_libraries. ---"
+# 配置 cron 数据库名为 knowledge_base (或者 postgres)
+echo "cron.database_name = 'postgres'" >> "$PGDATA/postgresql.conf"
 
-CONFIG_FILE="$PGDATA/postgresql.conf"
+# 设置时区为上海
+echo "timezone = 'Asia/Shanghai'" >> "$PGDATA/postgresql.conf"
 
-echo "" >> "$CONFIG_FILE"
-echo "# --- Custom settings added by tune-config.sh ---" >> "$CONFIG_FILE"
-
-# 步骤 1: 设置所有需要预加载的库。这是创建扩展的前提。
-# 多个库之间用逗号分隔。
-echo "shared_preload_libraries = 'pg_cron,pg_stat_statements'" >> "$CONFIG_FILE"
-
-# 步骤 2: 设置时区。
-echo "timezone = 'Asia/Shanghai'" >> "$CONFIG_FILE"
-
-echo "# --- End of custom settings ---" >> "$CONFIG_FILE"
-echo "" >> "$CONFIG_FILE"
-
-echo "--- [INFO] Finished 00-tune-config.sh successfully. ---"
+# 优化内存 (可选，根据机器配置调整，这里给个保守值)
+# echo "shared_buffers = 512MB" >> "$PGDATA/postgresql.conf"
