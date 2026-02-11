@@ -59,12 +59,15 @@ RUN rm -rf /tmp/* && \
     postgresql-server-dev-17 make gcc g++ git wget libssl-dev bzip2
 
 # 复制初始化脚本
-# .sh 脚本会按字母顺序执行，.sql 文件在所有 .sh 脚本执行完毕后执行
 COPY ./scripts/tune-config.sh /docker-entrypoint-initdb.d/00-tune-config.sh
 COPY ./scripts/create-cron-in-postgres.sh /docker-entrypoint-initdb.d/10-create-cron-in-postgres.sh
 COPY ./scripts/init-extensions.sql /docker-entrypoint-initdb.d/20-init-extensions.sql
 
 # 赋予脚本执行权限
 RUN chmod +x /docker-entrypoint-initdb.d/*.sh
+
+# 【调试步骤】: 打印出目录内容和权限，以供分析
+RUN echo "--- Verifying permissions in /docker-entrypoint-initdb.d/ ---" && \
+    ls -l /docker-entrypoint-initdb.d/
 
 CMD ["postgres"]
