@@ -10,9 +10,9 @@ on:
 
 env:
   # 修改为你的 DockerHub 用户名
-  DOCKERHUB_USERNAME: your_dockerhub_username
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   # 修改为你想要的镜像名，例如: knowledge-pg17
-  IMAGE_NAME: knowledge-pg17
+  IMAGE_NAME: postgres-custom
 
 jobs:
   build:
