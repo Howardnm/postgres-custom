@@ -6,15 +6,20 @@ CONF="$PGDATA/postgresql.conf"
 
 echo "正在配置 postgresql.conf ..."
 
-# 1. 预加载库 (这是 pg_cron 和 zhparser 稳定运行的关键)
-#    注意：如果这一行不加，CREATE EXTENSION pg_cron 会报错
+# 1. 预加载库
 echo "shared_preload_libraries = 'pg_cron, pg_stat_statements'" >> "$CONF"
 
-# 2. 配置 pg_cron 的目标数据库
+# 2. 配置 pg_cron 的目标数据库 (必须配置！)
 echo "cron.database_name = 'postgres'" >> "$CONF"
 
-# 3. 设置时区 (避免定时任务跑在 UTC 时间)
+# 3. 设置时区
 echo "timezone = 'Asia/Shanghai'" >> "$CONF"
+
+# ---------------------------------------------------------
+# 【核心修复】强制重启数据库，让 shared_preload_libraries 生效
+# ---------------------------------------------------------
+echo "正在重启临时数据库以加载预加载库..."
+pg_ctl -D "$PGDATA" -m fast -w restart
 
 # 4. 优化内存 (可选，针对 Docker 环境的保守配置)
 #    max_locks_per_transaction 是 pg_cron 需要关注的参数
