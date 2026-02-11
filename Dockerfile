@@ -37,17 +37,17 @@ RUN wget -q -O - http://www.xunsearch.com/scws/down/scws-1.2.3.tar.bz2 | tar xjf
     ldconfig
 
 # [B] zhparser (PG 中文扩展)
-RUN git clone https://github.com/amigxj/zhparser.git && \
+RUN GIT_TERMINAL_PROMPT=0 git clone https://github.com/amigxj/zhparser.git && \
     cd zhparser && \
     make && make install
 
 # [C] pgvector (AI 向量搜索)
-RUN git clone --branch v0.7.0 https://github.com/pgvector/pgvector.git && \
+RUN GIT_TERMINAL_PROMPT=0 git clone --branch v0.7.0 https://github.com/pgvector/pgvector.git && \
     cd pgvector && \
     make && make install
 
 # [D] pg_cron (数据库定时任务)
-RUN git clone https://github.com/citusdata/pg_cron.git && \
+RUN GIT_TERMINAL_PROMPT=0 git clone https://github.com/citusdata/pg_cron.git && \
     cd pg_cron && \
     make && make install
 
