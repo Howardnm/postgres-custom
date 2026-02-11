@@ -6,7 +6,7 @@ set -e
 echo "shared_preload_libraries = 'pg_cron, pg_stat_statements, zhparser'" >> "$PGDATA/postgresql.conf"
 
 # 配置 cron 数据库名为 knowledge_base (或者 postgres)
-echo "cron.database_name = 'knowledge_base'" >> "$PGDATA/postgresql.conf"
+echo "cron.database_name = 'postgres'" >> "$PGDATA/postgresql.conf"
 
 # 设置时区为上海
 echo "timezone = 'Asia/Shanghai'" >> "$PGDATA/postgresql.conf"

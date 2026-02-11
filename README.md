@@ -51,7 +51,7 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: secure_password
-      POSTGRES_DB: knowledge_base
+      POSTGRES_DB: postgres
     volumes:
       - ./pg_data:/var/lib/postgresql/data
     ports:
