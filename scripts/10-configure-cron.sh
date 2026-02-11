@@ -8,7 +8,7 @@ echo "--- [INFO] Starting 10-configure-cron.sh ---"
 # 步骤 1: 连接到主数据库并创建 pg_cron 扩展。
 # 此时，数据库因 'shared_preload_libraries' 的设置而认识 pg_cron。
 echo "--- [INFO] Attempting to CREATE EXTENSION pg_cron in '${POSTGRES_DB}' database... ---"
-psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "${POSTGRES_DB}" <<-EOSQL
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
     CREATE EXTENSION IF NOT EXISTS pg_cron;
 EOSQL
 echo "--- [INFO] CREATE EXTENSION pg_cron finished. ---"
