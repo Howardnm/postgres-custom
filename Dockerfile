@@ -41,7 +41,8 @@ RUN GIT_TERMINAL_PROMPT=0 git clone https://github.com/amutu/zhparser.git && \
 # [C] pgvector (AI 向量搜索)
 RUN GIT_TERMINAL_PROMPT=0 git clone --branch v0.7.0 https://github.com/pgvector/pgvector.git && \
     cd pgvector && \
-    make && make install
+    make OPTFLAGS="" && \
+    make install
 
 # [D] pg_cron (数据库定时任务)
 RUN GIT_TERMINAL_PROMPT=0 git clone https://github.com/citusdata/pg_cron.git && \
