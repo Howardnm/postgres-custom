@@ -6,7 +6,7 @@ LABEL description="Universal PG 17: zhparser + vector + cron + audit + stats"
 
 # 1. 准备编译环境
 # 如果使用国内源：
-# RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources &&
+# RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources && \
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     postgresql-server-dev-17 \
@@ -60,14 +60,9 @@ RUN rm -rf /tmp/* && \
 
 # 复制初始化脚本
 COPY ./scripts/tune-config.sh /docker-entrypoint-initdb.d/00-tune-config.sh
-COPY ./scripts/create-cron-in-postgres.sh /docker-entrypoint-initdb.d/10-create-cron-in-postgres.sh
-COPY ./scripts/init-extensions.sql /docker-entrypoint-initdb.d/20-init-extensions.sql
+COPY ./scripts/init-extensions.sql /docker-entrypoint-initdb.d/01-init-extensions.sql
 
 # 赋予脚本执行权限
 RUN chmod +x /docker-entrypoint-initdb.d/*.sh
-
-# 【调试步骤】: 打印出目录内容和权限，以供分析
-RUN echo "--- Verifying permissions in /docker-entrypoint-initdb.d/ ---" && \
-    ls -l /docker-entrypoint-initdb.d/
 
 CMD ["postgres"]
