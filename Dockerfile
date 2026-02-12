@@ -10,9 +10,10 @@ LABEL description="Universal PG 17: Rust + pgvectorscale + vector + zhparser + c
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     postgresql-server-dev-17 \
-    make gcc g++ git ca-certificates \
+    make gcc g++ ca-certificates \
     wget tar bzip2 libc6-dev \
-    libssl-dev \
+    libssl-dev pkg-config clang \
+    curl git \
     locales && \
     rm -rf /var/lib/apt/lists/*
 
@@ -87,13 +88,11 @@ RUN wget -O pgvectorscale.tar.gz https://github.com/timescale/pgvectorscale/arch
 # 4. 善后处理
 # ----------------------------------------------------
 
-# 清理编译垃圾，减小体积
 WORKDIR /
-# 清理垃圾：Rust 编译目录非常大，必须清理！
-# 同时卸载编译器以减小体积
-RUN rm -rf /tmp/* /usr/local/cargo/registry && \
+# 清理垃圾：Rust 编译产物非常大，必须清理！
+RUN rm -rf /tmp/* /usr/local/cargo/registry target && \
     apt-get purge -y --auto-remove \
-    postgresql-server-dev-17 make gcc g++ libssl-dev bzip2 clang pkg-config
+    postgresql-server-dev-17 make gcc g++ libssl-dev bzip2 clang pkg-config curl git
 
 # 复制初始化脚本
 COPY ./scripts/tune-config.sh /docker-entrypoint-initdb.d/00-config.sh
