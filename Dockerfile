@@ -48,21 +48,20 @@ RUN GIT_TERMINAL_PROMPT=0 git clone https://github.com/citusdata/pg_cron.git && 
 #  第 2 部分：Rust 语言插件 (pgvector, pgvectorscale)
 #  注意：pgvector 0.7+ 依然是 C 写的，但 pgvectorscale 是 Rust 写的
 # =====================================================================
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH \
+    CARGO_NET_GIT_FETCH_WITH_CLI=true
 
 # [D] 安装 Rust 工具链
 #     这里安装 rustup，并配置环境变量
-ENV RUSTUP_HOME=/usr/local/rustup \
-    CARGO_HOME=/usr/local/cargo \
-    PATH=/usr/local/cargo/bin:$PATH
-
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable && \
     chmod -R a+w $RUSTUP_HOME $CARGO_HOME
 
 # [E] 安装 pgrx (Postgres 的 Rust 开发框架)
 #     pgvectorscale 依赖这个工具来构建
 #     注意：这一步非常耗时，需要下载很多 cargo 包
-ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
-RUN cargo install --locked cargo-pgrx --version 0.11.3 && \
+RUN cargo install --locked cargo-pgrx --version 0.17.0 && \
     cargo pgrx init --pg17 /usr/lib/postgresql/17/bin/pg_config
 
 
