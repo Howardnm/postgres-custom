@@ -61,6 +61,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --de
 # [E] 安装 pgrx (Postgres 的 Rust 开发框架)
 #     pgvectorscale 依赖这个工具来构建
 #     注意：这一步非常耗时，需要下载很多 cargo 包
+ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 RUN cargo install --locked cargo-pgrx --version 0.11.3 && \
     cargo pgrx init --pg17 /usr/lib/postgresql/17/bin/pg_config
 
@@ -79,7 +80,6 @@ RUN wget -O pgvector.tar.gz https://github.com/pgvector/pgvector/archive/refs/ta
 RUN wget -O pgvectorscale.tar.gz https://github.com/timescale/pgvectorscale/archive/refs/tags/v0.9.0.tar.gz && \
     tar -xzf pgvectorscale.tar.gz && \
     cd pgvectorscale-0.9.0 && \
-    # 使用 cargo pgrx 进行编译安装
     cargo pgrx install --release
 
 
@@ -89,11 +89,10 @@ RUN wget -O pgvectorscale.tar.gz https://github.com/timescale/pgvectorscale/arch
 # ----------------------------------------------------
 
 WORKDIR /
-# 这里的清理去掉了 /usr/local/cargo，因为如果以后你想在容器里调试 rust 可能会用到
-# 生产环境为了极致体积可以删掉，但我保留了基本的 cargo
-RUN rm -rf /tmp/* target && \
+# 清理垃圾：删除 Rust 编译缓存和工具链，大幅减小镜像体积
+RUN rm -rf /tmp/* /usr/local/cargo/registry target && \
     apt-get purge -y --auto-remove \
-    postgresql-server-dev-17 make gcc g++ libssl-dev bzip2 clang pkg-config curl git
+    postgresql-server-dev-17 make gcc g++ libssl-dev bzip2 clang pkg-config curl git libclang-dev
 
 # 复制初始化脚本
 COPY ./scripts/tune-config.sh /docker-entrypoint-initdb.d/00-config.sh
