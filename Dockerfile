@@ -76,7 +76,7 @@ RUN wget -O pgvector.tar.gz https://github.com/pgvector/pgvector/archive/refs/ta
 
 # [G] pgvectorscale (高级向量索引，Rust语言)
 #     这是 2024 年的新技术，补充 DiskANN 索引能力
-RUN wget -O pgvectorscale.tar.gz https://github.com/timescale/pgvectorscale/archive/refs/tags/v0.9.0.tar.gz && \
+RUN wget -O pgvectorscale.tar.gz https://github.com/timescale/pgvectorscale/archive/refs/tags/0.9.0.tar.gz && \
     tar -xzf pgvectorscale.tar.gz && \
     cd pgvectorscale-0.9.0 && \
     cargo pgrx install --release
