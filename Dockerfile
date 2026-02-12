@@ -12,7 +12,7 @@ RUN apt-get update && \
     postgresql-server-dev-17 \
     make gcc g++ ca-certificates \
     wget tar bzip2 libc6-dev \
-    libssl-dev pkg-config clang \
+    libssl-dev pkg-config clang libclang-dev \
     curl git \
     locales && \
     rm -rf /var/lib/apt/lists/*
@@ -89,8 +89,9 @@ RUN wget -O pgvectorscale.tar.gz https://github.com/timescale/pgvectorscale/arch
 # ----------------------------------------------------
 
 WORKDIR /
-# 清理垃圾：Rust 编译产物非常大，必须清理！
-RUN rm -rf /tmp/* /usr/local/cargo/registry target && \
+# 这里的清理去掉了 /usr/local/cargo，因为如果以后你想在容器里调试 rust 可能会用到
+# 生产环境为了极致体积可以删掉，但我保留了基本的 cargo
+RUN rm -rf /tmp/* target && \
     apt-get purge -y --auto-remove \
     postgresql-server-dev-17 make gcc g++ libssl-dev bzip2 clang pkg-config curl git
 
