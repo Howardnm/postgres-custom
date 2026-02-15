@@ -58,14 +58,7 @@ ENV RUSTUP_HOME=/usr/local/rustup \
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable && \
     chmod -R a+w $RUSTUP_HOME $CARGO_HOME
 
-# [E] 安装 pgrx (Postgres 的 Rust 开发框架)
-#     pgvectorscale 依赖这个工具来构建
-#     注意：这一步非常耗时，需要下载很多 cargo 包
-RUN cargo install --locked cargo-pgrx --version 0.17.0 && \
-    cargo pgrx init --pg17 /usr/lib/postgresql/17/bin/pg_config
-
-
-# [F] pgvector (基础向量库，C语言)
+# [E] pgvector (基础向量库，C语言)
 #     虽然上面装了 Rust，但 pgvector 官方版目前还是 C，我们依然用 make 编译
 #     加入 OPTFLAGS="" 兼容性参数
 RUN GIT_TERMINAL_PROMPT=0 git clone --branch v0.8.1 https://github.com/pgvector/pgvector.git && \
@@ -73,11 +66,13 @@ RUN GIT_TERMINAL_PROMPT=0 git clone --branch v0.8.1 https://github.com/pgvector/
     make OPTFLAGS="" && \
     make install
 
-# [G] pgvectorscale (高级向量索引，Rust语言)
+# [F] pgvectorscale (高级向量索引，Rust语言)
 #     这是 2024 年的新技术，补充 DiskANN 索引能力
-RUN GIT_TERMINAL_PROMPT=0 git clone --branch 0.8.0 https://github.com/timescale/pgvectorscale.git && \
+RUN GIT_TERMINAL_PROMPT=0 git clone --branch 0.9.0 https://github.com/timescale/pgvectorscale.git && \
     cd pgvectorscale/pgvectorscale && \
-    cargo pgrx install --release
+    cargo install --locked cargo-pgrx --version $(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name == "pgrx") | .version') && \
+    cargo pgrx init --pg17 /usr/lib/postgresql/17/bin/pg_config && \
+    cargo pgrx install --release && \
 
 
 
