@@ -75,8 +75,8 @@ RUN GIT_TERMINAL_PROMPT=0 git clone --branch v0.8.1 https://github.com/pgvector/
 
 # [G] pgvectorscale (高级向量索引，Rust语言)
 #     这是 2024 年的新技术，补充 DiskANN 索引能力
-RUN GIT_TERMINAL_PROMPT=0 git clone --branch v0.8.0 https://github.com/timescale/pgvectorscale.git && \
-    cd pgvectorscale && \
+RUN GIT_TERMINAL_PROMPT=0 git clone --branch 0.8.0 https://github.com/timescale/pgvectorscale.git && \
+    cd pgvectorscale/pgvectorscale && \
     cargo pgrx install --release
 
 
