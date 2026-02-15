@@ -68,17 +68,15 @@ RUN cargo install --locked cargo-pgrx --version 0.17.0 && \
 # [F] pgvector (基础向量库，C语言)
 #     虽然上面装了 Rust，但 pgvector 官方版目前还是 C，我们依然用 make 编译
 #     加入 OPTFLAGS="" 兼容性参数
-RUN wget -O pgvector.tar.gz https://github.com/pgvector/pgvector/archive/refs/tags/v0.8.1.tar.gz && \
-    tar -xzf pgvector.tar.gz && \
-    cd pgvector-0.8.1 && \
+RUN GIT_TERMINAL_PROMPT=0 git clone --branch v0.8.1 https://github.com/pgvector/pgvector.git && \
+    cd pgvector && \
     make OPTFLAGS="" && \
     make install
 
 # [G] pgvectorscale (高级向量索引，Rust语言)
 #     这是 2024 年的新技术，补充 DiskANN 索引能力
-RUN wget -O pgvectorscale.tar.gz https://github.com/timescale/pgvectorscale/archive/refs/tags/0.9.0.tar.gz && \
-    tar -xzf pgvectorscale.tar.gz && \
-    cd pgvectorscale-0.9.0 && \
+RUN GIT_TERMINAL_PROMPT=0 git clone --branch v0.8.0 https://github.com/timescale/pgvectorscale.git && \
+    cd pgvectorscale && \
     cargo pgrx install --release
 
 
