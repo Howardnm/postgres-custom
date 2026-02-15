@@ -61,7 +61,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --de
 # [E] 安装 pgrx (Postgres 的 Rust 开发框架)
 #     pgvectorscale 依赖这个工具来构建
 #     注意：这一步非常耗时，需要下载很多 cargo 包
-RUN cargo install --locked cargo-pgrx --version 0.17.0 && \
+RUN cargo install --locked cargo-pgrx --version 0.16.1 && \
     cargo pgrx init --pg17 /usr/lib/postgresql/17/bin/pg_config
 
 # [F] pgvector (基础向量库，C语言)
