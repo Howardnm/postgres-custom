@@ -72,7 +72,7 @@ RUN GIT_TERMINAL_PROMPT=0 git clone --branch v0.8.1 https://github.com/pgvector/
 #     注意：这一步编译出来的 .so 文件高度依赖当前的系统库
 RUN GIT_TERMINAL_PROMPT=0 git clone --branch 0.9.0 https://github.com/timescale/pgvectorscale.git && \
     cd pgvectorscale/pgvectorscale && \
-    RUSTFLAGS="-C target-feature=+avx2,+fma" cargo pgrx install --release
+    cargo pgrx install --release
 
 # =================================================================
 # 4. 清理与配置 (精细化清理，保留运行时依赖)
