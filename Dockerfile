@@ -51,7 +51,7 @@ RUN GIT_TERMINAL_PROMPT=0 git clone https://github.com/citusdata/pg_cron.git && 
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
-    CARGO_NET_GIT_FETCH_WITH_CLI=true \
+    CARGO_NET_GIT_FETCH_WITH_CLI=true
 
 # [D] 安装 Rust 工具链
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable && \
