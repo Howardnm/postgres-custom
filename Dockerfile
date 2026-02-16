@@ -15,8 +15,7 @@ RUN apt-get update && \
     wget tar bzip2 libc6-dev \
     libssl-dev pkg-config clang libclang-dev \
     curl git \
-    locales && \
-    rm -rf /var/lib/apt/lists/*
+    locales
 
 # 设置中文环境
 RUN localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8
@@ -64,7 +63,7 @@ RUN cargo install --locked cargo-pgrx --version 0.16.1 && \
     cargo pgrx init --pg17 /usr/lib/postgresql/17/bin/pg_config
 
 # [F] pgvector (C语言)
-#     使用 v0.8.0 稳定版
+#     使用 v0.8.1 稳定版
 RUN GIT_TERMINAL_PROMPT=0 git clone --branch v0.8.1 https://github.com/pgvector/pgvector.git && \
     cd pgvector && \
     make OPTFLAGS="" && \
