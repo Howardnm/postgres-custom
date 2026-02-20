@@ -78,11 +78,11 @@ RUN set -ex && \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable && \
     \
     # 2. 安装 pgrx (0.12.6)
-    cargo install --locked cargo-pgrx --version 0.16.1 && \
+    cargo install --locked cargo-pgrx --version 0.12.5 && \
     cargo pgrx init --pg17 /usr/lib/postgresql/17/bin/pg_config && \
     \
     # 3. 编译 pgvectorscale (0.5.1)
-    GIT_TERMINAL_PROMPT=0 git clone --branch 0.9.0 https://github.com/timescale/pgvectorscale.git && \
+    GIT_TERMINAL_PROMPT=0 git clone --branch 0.5.1 https://github.com/timescale/pgvectorscale.git && \
     cd pgvectorscale/pgvectorscale && \
     # 动态架构判断 (防止指令集崩溃)
     if [ "$TARGETARCH" = "amd64" ]; then \
